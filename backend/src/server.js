@@ -1,5 +1,8 @@
+// Main entrypoint for the backend. Run `npm run dev` to start server
+
 import express from "express";
 import router from "./routes/router.js";
+import db from "./db.js";
 
 const app = express();
 
