@@ -44,12 +44,12 @@ Then the API will be available at `http://localhost:5001/api`.
 
 ## Useful endpoints
 
-- `GET /api/movies/search?q=movieTitle` - search TMDB for movies
+- `GET /api/movies/search?query=movieTitle` - search TMDB for movies
 - `GET /api/watchlist` - return saved watchlist movies
-- `POST /api/watchlist` - add a movie to watchlist with body `{ "tmdbId": 12345 }`
+- `POST /api/watchlist` - add a movie to watchlist with body: `{ "tmdbId": TMDB-ID-HERE }`
 - `DELETE /api/watchlist/:tmdbId` - remove a movie from watchlist
 - `GET /api/history` - return saved watch history
-- `POST /api/history` - add a watched movie with body `{ "tmdbId": 12345, "watchedAt": "2026-04-10T12:00:00.000Z" }`
+- `POST /api/history` - add a watched movie with body `{ "tmdbId": TMDB-ID-HERE }`
 - `DELETE /api/history/:tmdbId` - remove a movie from watch history
 
 ## Notes

@@ -63,7 +63,7 @@ export async function getMovieDetails(tmdbId) {
 
   const movie = await fetchTmdb(`/movie/${tmdbId}`, {});
   return {
-    tmdb_id: movie.id,
+    tmdbId: movie.id,
     title: movie.title,
     description: movie.overview,
     poster_path: movie.poster_path,

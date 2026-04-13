@@ -8,44 +8,36 @@ db.pragma("foreign_keys = ON");
 // Create Movies table to store movie metadata from TMDB.
 db.exec(`
 CREATE TABLE IF NOT EXISTS Movies (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  tmdb_id INTEGER UNIQUE NOT NULL,
+  tmdbId INTEGER PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
   poster_path TEXT,
   rating REAL,
   length_minutes INTEGER,
-  release_date TEXT,
-  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  release_date TEXT
 )
 `);
 
 // Create Watchlist table that references a saved movie.
 db.exec(`
 CREATE TABLE IF NOT EXISTS Watchlist (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  movie_id INTEGER NOT NULL,
-  added_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE,
-  UNIQUE (movie_id)
+  movie_id INTEGER PRIMARY KEY,
+  FOREIGN KEY (movie_id) REFERENCES Movies(tmdbId) ON DELETE CASCADE
 )
 `);
 
 // Create WatchHistory table where each row records a movie that was watched.
 db.exec(`
 CREATE TABLE IF NOT EXISTS WatchHistory (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  movie_id INTEGER NOT NULL,
-  watched_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  notes TEXT,
-  FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
+  movie_id INTEGER PRIMARY KEY,
+  FOREIGN KEY (movie_id) REFERENCES Movies(tmdbId) ON DELETE CASCADE
 )
 `);
 
 // Prepared SQL statement used to insert a movie.
 const insertMovie = db.prepare(`
-  INSERT INTO Movies (tmdb_id, title, description, poster_path, rating, length_minutes, release_date)
-  VALUES (@tmdb_id, @title, @description, @poster_path, @rating, @length_minutes, @release_date)
+  INSERT INTO Movies (tmdbId, title, description, poster_path, rating, length_minutes, release_date)
+  VALUES (@tmdbId, @title, @description, @poster_path, @rating, @length_minutes, @release_date)
 `);
 
 // Prepared SQL statement used to update movie details if the movie already exists.
@@ -57,32 +49,28 @@ const updateMovie = db.prepare(`
       rating = @rating,
       length_minutes = @length_minutes,
       release_date = @release_date
-  WHERE tmdb_id = @tmdb_id
+  WHERE tmdbId = @tmdbId
 `);
 
 // Query to find a movie by its TMDB id.
-const selectMovieByTmdbId = db.prepare(
-  `SELECT * FROM Movies WHERE tmdb_id = ?`,
-);
-const selectMovieById = db.prepare(`SELECT * FROM Movies WHERE id = ?`);
+const selectMovieByTmdbId = db.prepare(`SELECT * FROM Movies WHERE tmdbId = ?`);
+const selectMovieById = db.prepare(`SELECT * FROM Movies WHERE tmdbId = ?`);
 const searchMoviesByTitle = db.prepare(
   `SELECT * FROM Movies WHERE title LIKE ? ORDER BY title`,
 );
 
 // Query to return watchlist rows joined with their movie data.
 const selectWatchlist = db.prepare(`
-  SELECT w.id AS watchlist_id, m.*, w.added_at
+  SELECT m.*
   FROM Watchlist w
-  JOIN Movies m ON w.movie_id = m.id
-  ORDER BY w.added_at DESC
+  JOIN Movies m ON w.movie_id = m.tmdbId
 `);
 
 // Query to return history rows joined with their movie data.
 const selectWatchHistory = db.prepare(`
-  SELECT h.id AS history_id, m.*, h.watched_at, h.notes
+  SELECT m.*
   FROM WatchHistory h
-  JOIN Movies m ON h.movie_id = m.id
-  ORDER BY h.watched_at DESC
+  JOIN Movies m ON h.movie_id = m.tmdbId
 `);
 
 // Insert a movie into the watchlist if it is not already there.
@@ -91,7 +79,7 @@ const insertWatchlist = db.prepare(
 );
 const deleteWatchlist = db.prepare(`DELETE FROM Watchlist WHERE movie_id = ?`);
 const insertWatchHistory = db.prepare(
-  `INSERT INTO WatchHistory (movie_id, watched_at, notes) VALUES (?, ?, ?)`,
+  `INSERT INTO WatchHistory (movie_id) VALUES (?)`,
 );
 const deleteWatchHistory = db.prepare(
   `DELETE FROM WatchHistory WHERE movie_id = ?`,
@@ -102,11 +90,6 @@ function findMovieByTmdbId(tmdbId) {
   return selectMovieByTmdbId.get(tmdbId);
 }
 
-// Find a local movie row by the local movie id.
-function findMovieById(id) {
-  return selectMovieById.get(id);
-}
-
 // Search local movie titles using a LIKE query.
 function searchLocalMovies(query) {
   return searchMoviesByTitle.all(`%${query}%`);
@@ -114,13 +97,13 @@ function searchLocalMovies(query) {
 
 // Save movie details locally or update them if the movie already exists.
 function createOrUpdateMovie(movie) {
-  const existing = findMovieByTmdbId(movie.tmdb_id);
+  const existing = findMovieByTmdbId(movie.id);
   if (existing) {
     updateMovie.run(movie);
     return { ...existing, ...movie };
   }
   const result = insertMovie.run(movie);
-  return findMovieById(result.lastInsertRowid);
+  return findMovieByTmdbId(result.lastInsertRowid);
 }
 
 // Return all watchlist items with movie details.
@@ -145,8 +128,8 @@ function listWatchHistory() {
 }
 
 // Add a movie to history with optional watched time and notes.
-function addMovieToHistory(movieId, watchedAt, notes = null) {
-  insertWatchHistory.run(movieId, watchedAt || new Date().toISOString(), notes);
+function addMovieToHistory(movieId) {
+  insertWatchHistory.run(movieId);
   return listWatchHistory();
 }
 
@@ -158,7 +141,6 @@ function removeMovieFromHistory(movieId) {
 export default db;
 export {
   findMovieByTmdbId,
-  findMovieById,
   createOrUpdateMovie,
   searchLocalMovies,
   listWatchlist,
