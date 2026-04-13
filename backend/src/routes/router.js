@@ -21,7 +21,6 @@ const router = express.Router();
 async function ensureLocalMovie(tmdbId) {
   const existing = findMovieByTmdbId(tmdbId);
   if (existing) return existing;
-
   const details = await getMovieDetails(tmdbId);
   return createOrUpdateMovie(details);
 }
@@ -48,10 +47,9 @@ router.get("/watchlist", (req, res) => {
 // Add a movie to the watchlist by TMDB id.
 router.post("/watchlist", async (req, res) => {
   const tmdbId = Number(req.body.tmdbId);
-
   try {
     const movie = await ensureLocalMovie(tmdbId);
-    addMovieToWatchlist(movie.id);
+    addMovieToWatchlist(movie.tmdbId);
     return res.status(201).json({ movie });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -60,7 +58,7 @@ router.post("/watchlist", async (req, res) => {
 
 // Remove a movie from the watchlist by TMDB id.
 router.delete("/watchlist/:tmdbId", (req, res) => {
-  const tmdbId = Number(req.params.tmdbId || 0);
+  const tmdbId = Number(req.params.tmdbId);
   if (!tmdbId) {
     return res.status(400).json({ error: "Missing tmdbId in route parameter" });
   }
@@ -70,7 +68,7 @@ router.delete("/watchlist/:tmdbId", (req, res) => {
     return res.status(404).json({ error: "Movie not found in local database" });
   }
 
-  removeMovieFromWatchlist(movie.id);
+  removeMovieFromWatchlist(movie.tmdbId);
   return res.status(204).send();
 });
 
@@ -82,17 +80,11 @@ router.get("/history", (req, res) => {
 
 // Add a watched movie to history by TMDB id.
 router.post("/history", async (req, res) => {
-  const tmdbId = Number(req.body.tmdbId || 0);
-  const watchedAt = req.body.watchedAt ? String(req.body.watchedAt) : undefined;
-  const notes = req.body.notes ? String(req.body.notes) : undefined;
-
-  if (!tmdbId) {
-    return res.status(400).json({ error: "Missing tmdbId in request body" });
-  }
+  const tmdbId = Number(req.body.tmdbId);
 
   try {
     const movie = await ensureLocalMovie(tmdbId);
-    addMovieToHistory(movie.id, watchedAt, notes);
+    addMovieToHistory(movie.tmdbId);
     return res.status(201).json({ movie });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -101,7 +93,7 @@ router.post("/history", async (req, res) => {
 
 // Remove a movie from history by TMDB id.
 router.delete("/history/:tmdbId", (req, res) => {
-  const tmdbId = Number(req.params.tmdbId || 0);
+  const tmdbId = Number(req.params.tmdbId);
   if (!tmdbId) {
     return res.status(400).json({ error: "Missing tmdbId in route parameter" });
   }
@@ -111,7 +103,7 @@ router.delete("/history/:tmdbId", (req, res) => {
     return res.status(404).json({ error: "Movie not found in local database" });
   }
 
-  removeMovieFromHistory(movie.id);
+  removeMovieFromHistory(movie.tmdbId);
   return res.status(204).send();
 });
 
