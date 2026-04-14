@@ -1,39 +1,38 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import React from 'react'
+import { Route, Routes, Link } from 'react-router'
+import { WatchlistPage } from './pages/WatchlistPage'
+import { SearchPage } from './pages/SearchPage'
+import { ReviewPage } from './pages/ReviewPage'
 import './App.css'
 
-function Search() {
-  return <h2>Search Page</h2>
-}
-function Watchlist(){
-  return <h2>Watchlist Page</h2>
-}
-
-function Reviews() {
-  return <h2>Reviews / Watched Page</h2>
-}
-
-function App() {
+export const App = () => {
   return (
-    <Router>
+    <div>
+      {/* Navbar */}
       <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div className="container-fluid">
           <span className="navbar-brand">Movie-Watchlist</span>
 
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav me-auto">
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/watchlist">
-                  Watchlist
+
+              {/* Button to go to the homepage/watchlist */}
+              <li className="nav-item" style={{marginLeft: '449px'}}>
+                <Link className="nav-link text-white" to="/">
+                  My Watchlist
                 </Link>
               </li>
+
+              {/* Button to go to the search tab */}
               <li className="nav-item">
-                <Link className="nav-link text-white" to="/movie-search">
+                <Link className="nav-link text-white" to="/search">
                   Movie Search
                 </Link>
               </li>
 
+              {/* Button to go to the reviews tab */}
               <li className="nav-item">
-                <Link className="nav-link text-white" to="/reviews">
+                <Link className="nav-link text-white" to="/review">
                   Reviews/Watched
                 </Link>
               </li>
@@ -43,12 +42,11 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/watchlist" element={<Watchlist />} />
-        <Route path="/movie-search" element={<Search />} />
-        <Route path="/reviews" element={<Reviews />} />
+        <Route path="/" element={<WatchlistPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/review" element={<ReviewPage />} />
       </Routes>
-    </Router>
+
+    </div>
   )
 }
-
-export default App
