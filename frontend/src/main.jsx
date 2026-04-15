@@ -5,11 +5,11 @@ import { BrowserRouter } from 'react-router'
 import { Toaster } from "react-hot-toast"
 import "bootswatch/dist/lux/bootstrap.min.css";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <App />
       <Toaster />
     </BrowserRouter>
   </StrictMode>,
-)
+);
