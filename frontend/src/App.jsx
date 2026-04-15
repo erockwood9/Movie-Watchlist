@@ -1,9 +1,10 @@
-import React from 'react'
-import { Route, Routes, Link } from 'react-router'
-import { WatchlistPage } from './pages/WatchlistPage'
-import { SearchPage } from './pages/SearchPage'
-import { ReviewPage } from './pages/ReviewPage'
-import './App.css'
+import React from "react";
+import { Route, Routes, Link } from "react-router";
+import { WatchlistPage } from "./pages/WatchlistPage";
+import { SearchPage } from "./pages/SearchPage";
+import { ReviewPage } from "./pages/ReviewPage";
+import "bootswatch/dist/lux/bootstrap.min.css";
+//import "./App.css";
 
 export const App = () => {
   return (
@@ -15,9 +16,8 @@ export const App = () => {
 
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav me-auto">
-
               {/* Button to go to the homepage/watchlist */}
-              <li className="nav-item" style={{marginLeft: '449px'}}>
+              <li className="nav-item" style={{ marginLeft: "449px" }}>
                 <Link className="nav-link text-white" to="/">
                   My Watchlist
                 </Link>
@@ -46,7 +46,6 @@ export const App = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/review" element={<ReviewPage />} />
       </Routes>
-
     </div>
-  )
-}
+  );
+};
