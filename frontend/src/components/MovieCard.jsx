@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import './MovieCard.css';
+import React, { useState, useEffect } from 'react';
+import 'bootswatch/dist/lux/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import * as bootstrap from 'bootstrap';
 
 const MovieCard = ({ movie }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -12,25 +14,96 @@ const MovieCard = ({ movie }) => {
     setShowDetails(false);
   };
 
+  useEffect(() => {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+  const tooltips = [...tooltipTriggerList].map(
+    (el) => new bootstrap.Tooltip(el)
+  );
+
+  return () => {
+    tooltips.forEach((tooltip) => tooltip.dispose());
+  };
+  }, [showDetails]);
+
   return (
     <>
+      {/* Movie Card */}
       <div
-        className="movie-card"
-        style={{ backgroundImage: `url(${movie.poster})` }}
+        className="card"
+        style={{ width: '13rem', cursor: 'pointer' }}
         onClick={handleCardClick}
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title={movie.title}
       >
-        <div className="movie-title">{movie.title}</div>
+        <img
+          src={movie.poster}
+          className="card-img-top"
+          alt={`${movie.title} poster`}
+        />
       </div>
 
+      {/* Modal */}
       {showDetails && (
-        <div className="movie-details-overlay">
-          <div className="movie-details">
-            <button className="close-button" onClick={handleClose}>X</button>
-            <h2>{movie.title}</h2>
-            <p><strong>Length:</strong> {movie.length}</p>
-            <p><strong>Director:</strong> {movie.director}</p>
-            <p><strong>Rating:</strong> {movie.rating}</p>
-            <img src={movie.poster} alt={`${movie.title} poster`} />
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div
+            className="modal-dialog modal-dialog-centered"
+            role="document"
+            style={{ maxWidth: '400px', lineHeight: '55px' }}
+          >
+            <div className="modal-content bg-primary text-white position-relative">
+
+              {/* Header */}
+              <div className="modal-header p-2">
+                <h5 className="modal-title text-white">{movie.title}</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleClose}
+                  style={{ filter: 'invert(1)' }}
+                ></button>
+              </div>
+
+              {/* Body */}
+              <div className="modal-body">
+                <p><strong>Length:</strong> {movie.length}</p>
+                <p><strong>Director:</strong> {movie.director}</p>
+                <p><strong>Rating:</strong> {movie.rating}</p>
+
+                <img
+                  src={movie.poster}
+                  alt={`${movie.title} poster`}
+                  style={{ width: '200px' }}
+                />
+              </div>
+
+              {/* Bottom-right action buttons */}
+              <div className="position-absolute bottom-0 end-0 d-flex flex-column p-3">
+                
+                <button
+                  className="btn btn-danger rounded-circle d-flex align-items-center justify-content-center mb-2"
+                  style={{ width: '40px', height: '40px' }}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  title="Delete Movie"
+                >
+                  <i className="bi bi-x fs-3"></i>
+                </button>
+
+                <button
+                  className="btn btn-warning rounded-circle d-flex align-items-center justify-content-center"
+                  style={{ width: '40px', height: '40px' }}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  title="Move To Watch History"
+                >
+                  <i className="bi bi-arrow-right fs-4"></i>
+                </button>
+
+              </div>
+
+            </div>
           </div>
         </div>
       )}
