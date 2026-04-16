@@ -9,8 +9,7 @@ export const SearchPage = () => {
                 type="text"
                 className="form-control"
                 placeholder="Search For A Movie"
-                id="inputDefault"
-            />
+                id="inputDefault"/>
         </div>
     </div>
   )

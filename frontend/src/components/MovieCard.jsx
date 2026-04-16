@@ -3,7 +3,7 @@ import 'bootswatch/dist/lux/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import * as bootstrap from 'bootstrap';
 
-const MovieCard = ({ movie }) => {
+const MovieCard = ({ movie, onMove, onDelete }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const handleCardClick = () => {
@@ -35,13 +35,11 @@ const MovieCard = ({ movie }) => {
         onClick={handleCardClick}
         data-bs-toggle="tooltip"
         data-bs-placement="bottom"
-        title={movie.title}
-      >
+        title={movie.title}>
         <img
           src={movie.poster}
           className="card-img-top"
-          alt={`${movie.title} poster`}
-        />
+          alt={`${movie.title} poster`}/>
       </div>
 
       {/* Modal */}
@@ -50,10 +48,8 @@ const MovieCard = ({ movie }) => {
           <div
             className="modal-dialog modal-dialog-centered"
             role="document"
-            style={{ maxWidth: '400px', lineHeight: '55px' }}
-          >
+            style={{ maxWidth: '400px', lineHeight: '55px' }}>
             <div className="modal-content bg-primary text-white position-relative">
-
               {/* Header */}
               <div className="modal-header p-2">
                 <h5 className="modal-title text-white">{movie.title}</h5>
@@ -64,45 +60,47 @@ const MovieCard = ({ movie }) => {
                   style={{ filter: 'invert(1)' }}
                 ></button>
               </div>
-
               {/* Body */}
               <div className="modal-body">
                 <p><strong>Length:</strong> {movie.length}</p>
                 <p><strong>Director:</strong> {movie.director}</p>
                 <p><strong>Rating:</strong> {movie.rating}</p>
-
                 <img
                   src={movie.poster}
                   alt={`${movie.title} poster`}
-                  style={{ width: '200px' }}
-                />
+                  style={{ width: '200px' }}/>
               </div>
-
-              {/* Bottom-right action buttons */}
+              {/* Bottom right buttons */}
               <div className="position-absolute bottom-0 end-0 d-flex flex-column p-3">
-                
-                <button
-                  className="btn btn-danger rounded-circle d-flex align-items-center justify-content-center mb-2"
-                  style={{ width: '40px', height: '40px' }}
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="right"
-                  title="Delete Movie"
-                >
-                  <i className="bi bi-x fs-3"></i>
-                </button>
-
-                <button
-                  className="btn btn-warning rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: '40px', height: '40px' }}
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="right"
-                  title="Move To Watch History"
-                >
-                  <i className="bi bi-arrow-right fs-4"></i>
-                </button>
-
+                {onDelete && (
+                    <button
+                        className="btn btn-danger rounded-circle d-flex align-items-center justify-content-center mb-2"
+                        style={{ width: '40px', height: '40px' }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(movie);
+                        }}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="Delete Movie">
+                        <i className="bi bi-x fs-3"></i>
+                    </button>
+                )}
+                {onMove && (
+                    <button
+                        className="btn btn-warning rounded-circle d-flex align-items-center justify-content-center"
+                        style={{ width: '40px', height: '40px' }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onMove(movie);
+                        }}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="Move To Watch History">
+                        <i className="bi bi-arrow-right fs-4"></i>
+                    </button>
+                )}
               </div>
-
             </div>
           </div>
         </div>

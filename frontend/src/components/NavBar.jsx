@@ -23,10 +23,10 @@ const NavBar = () => {
                 </Link>
               </li>
 
-              {/* Button to go to the reviews tab */}
+              {/* Button to go to the watch history tab */}
               <li className="nav-item">
-                <Link className="nav-link text-white" to="/review">
-                  Reviews/Watched
+                <Link className="nav-link text-white" to="/history">
+                  Watch History
                 </Link>
               </li>
             </ul>
