@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router";
 import { WatchlistPage } from "./pages/WatchlistPage";
 import { SearchPage } from "./pages/SearchPage";
@@ -10,33 +10,57 @@ import toast from 'react-hot-toast';
 import { Toaster } from "react-hot-toast";
 
 export const App = () => {
-  const [watchlist, setWatchlist] = useState([
-    {
-      id: 1,
-      title: 'Inception',
-      length: '2h 28m',
-      director: 'Christopher Nolan',
-      rating: 'PG-13',
-      poster: 'https://image.tmdb.org/t/p/original/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg',
-    }
-  ]);
+  const [watchlist, setWatchlist] = useState([]);
 
   const [watchHistory, setWatchHistory] = useState([]);
 
+  
+
   const moveToHistory = (movie) => {
-    setWatchlist(watchlist.filter((m) => m.id !== movie.id));
-    setWatchHistory([...watchHistory, movie]);
-    toast.success(`${movie.title} has been moved to Watch History`);
+  fetch("http://localhost:5001/api/history", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tmdbId: movie.tmdbId })
+  })
+    .then(() =>
+      fetch(`http://localhost:5001/api/watchlist/${movie.tmdbId}`, {
+        method: "DELETE"
+      }))
+    .then(() => {
+      setWatchlist(prev => prev.filter(m => m.tmdbId !== movie.tmdbId));
+      setWatchHistory(prev => [...prev, movie]);
+      toast.success(`${movie.title} has been moved to Watch History`);
+    });
   };
   const deleteFromWatchlist = (movie) => {
-    setWatchlist(watchlist.filter((m) => m.id !== movie.id));
-    toast.error(`${movie.title} has been deleted from your Watchlist`);
+  fetch(`http://localhost:5001/api/watchlist/${movie.tmdbId}`, {
+    method: "DELETE"
+  })
+    .then(() => {
+      setWatchlist(prev => prev.filter(m => m.tmdbId !== movie.tmdbId));
+      toast.error(`${movie.title} has been removed from Watchlist`);
+    });
   };
 
   const deleteFromHistory = (movie) => {
-    setWatchHistory(watchHistory.filter((m) => m.id !== movie.id));
-    toast.error(`${movie.title} has been deleted from your Watch History`)
+  fetch(`http://localhost:5001/api/history/${movie.tmdbId}`, {
+    method: "DELETE"
+  })
+    .then(() => {
+      setWatchHistory(prev => prev.filter(m => m.tmdbId !== movie.tmdbId));
+      toast.error(`${movie.title} has been removed from Watch History`);
+    });
   };
+
+  useEffect(() => {
+    fetch("http://localhost:5001/api/watchlist")
+      .then(res => res.json())
+      .then(data => setWatchlist(data));
+
+    fetch("http://localhost:5001/api/history")
+      .then(res => res.json())
+      .then(data => setWatchHistory(data));
+    }, []);
 
   return (
     <div>

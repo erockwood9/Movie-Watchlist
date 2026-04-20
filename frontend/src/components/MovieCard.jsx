@@ -37,7 +37,7 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
         data-bs-placement="bottom"
         title={movie.title}>
         <img
-          src={movie.poster}
+          src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
           className="card-img-top"
           alt={`${movie.title} poster`}/>
       </div>
@@ -62,11 +62,11 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
               </div>
               {/* Body */}
               <div className="modal-body">
-                <p><strong>Length:</strong> {movie.length}</p>
-                <p><strong>Director:</strong> {movie.director}</p>
+                <p><strong>Length:</strong> {movie.length_minutes} min</p>
                 <p><strong>Rating:</strong> {movie.rating}</p>
+                <p><strong>Release Date:</strong> {movie.release_date}</p>
                 <img
-                  src={movie.poster}
+                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                   alt={`${movie.title} poster`}
                   style={{ width: '200px' }}/>
               </div>

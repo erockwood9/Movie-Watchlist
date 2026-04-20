@@ -41,7 +41,7 @@ router.get("/movies/search", async (req, res) => {
 // Return all movies currently in the watchlist.
 router.get("/watchlist", (req, res) => {
   const watchlist = listWatchlist();
-  res.status(200).json({ watchlist });
+  res.status(200).json(watchlist);
 });
 
 // Add a movie to the watchlist by TMDB id.
@@ -75,7 +75,7 @@ router.delete("/watchlist/:tmdbId", (req, res) => {
 // Return all watched movies from history.
 router.get("/history", (req, res) => {
   const history = listWatchHistory();
-  res.status(200).json({ history });
+  res.status(200).json(history);
 });
 
 // Add a watched movie to history by TMDB id.
