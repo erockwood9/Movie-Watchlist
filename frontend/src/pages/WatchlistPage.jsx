@@ -1,6 +1,7 @@
 import MovieCard from '../components/MovieCard';
 import React from 'react';
 
+
 export const WatchlistPage = ({ watchlist, moveToHistory, onDelete }) => {
   return (
     <div className="container mt-3">

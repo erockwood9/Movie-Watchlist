@@ -8,13 +8,26 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import NavBar from "./components/NavBar";
 import toast from 'react-hot-toast';
 import { Toaster } from "react-hot-toast";
+import { useLocation } from "react-router";
 
 export const App = () => {
   const [watchlist, setWatchlist] = useState([]);
 
   const [watchHistory, setWatchHistory] = useState([]);
 
-  
+  const location = useLocation();
+
+  const loadWatchlist = () => {
+    fetch("http://localhost:5001/api/watchlist")
+      .then(res => res.json())
+      .then(data => setWatchlist(data || []))
+  };
+
+  const loadHistory = () => {
+    fetch("http://localhost:5001/api/history")
+      .then(res => res.json())
+      .then(data => setWatchHistory(data || []))
+  }
 
   const moveToHistory = (movie) => {
   fetch("http://localhost:5001/api/history", {
@@ -53,14 +66,9 @@ export const App = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/watchlist")
-      .then(res => res.json())
-      .then(data => setWatchlist(data));
-
-    fetch("http://localhost:5001/api/history")
-      .then(res => res.json())
-      .then(data => setWatchHistory(data));
-    }, []);
+    loadWatchlist();
+    loadHistory();
+  }, [location.pathname]);
 
   return (
     <div>

@@ -6,6 +6,9 @@ export const SearchPage = () => {
 
   const [results, setResults] = useState([]);
 
+  const getPosterUrl = (path) => path ? `https://image.tmdb.org/t/p/w92${path}` : null;
+
+
   const searchMovies = async () => {
     if (!query) return;
     const res = await fetch(`http://localhost:5001/api/movies/search?query=${query}`);
@@ -34,6 +37,14 @@ export const SearchPage = () => {
           {(results || []).map((movie) => (
             <div key={movie.tmdbId} className="card mb-3">
               <div className="d-flex align-items-center">
+                <img
+                  src={getPosterUrl(movie.poster_path)}
+                  style={{
+                    width: "60px",
+                    height: "90px",
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                  }}/>
                 <div className="flex-grow-1 px-3">
                   <h6 className="mb=0">{movie.title}</h6>
                 </div>
