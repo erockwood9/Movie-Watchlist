@@ -14,30 +14,13 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
     setShowDetails(false);
   };
 
-  useEffect(() => {
-    const tooltipTriggerList = document.querySelectorAll(
-      '[data-bs-toggle="tooltip"]',
-    );
-
-    const tooltips = [...tooltipTriggerList].map(
-      (el) => new bootstrap.Tooltip(el),
-    );
-
-    return () => {
-      tooltips.forEach((tooltip) => tooltip.dispose());
-    };
-  }, [showDetails]);
-
   return (
     <>
       {/* Movie Card */}
       <div
-        className="card"
-        style={{ width: "13rem", cursor: "pointer" }}
+        className="card h-100"
+        style={{ cursor: "pointer" }}
         onClick={handleCardClick}
-        data-bs-toggle="tooltip"
-        data-bs-placement="bottom"
-        title={movie.title}
       >
         <img
           src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
@@ -50,71 +33,97 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
       {showDetails && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div
-            className="modal-dialog modal-dialog-centered"
+            className="modal-dialog modal-dialog-centered modal-lg"
             role="document"
-            style={{ maxWidth: "400px", lineHeight: "40px" }}
+            style={{
+              boxShadow: "none",
+              marginTop: "49px)",
+            }}
           >
             <div
-              className="modal-content bg-primary text-white position-relative"
-              style={{ borderRadius: "10px" }}
+              className="modal-content bg-primary text-white"
+              style={{
+                borderRadius: "10px",
+                maxHeight: "90vh",
+                overflowY: "hidden",
+              }}
             >
               {/* Header */}
-              <div className="modal-header p-2">
-                <h5 className="modal-title text-white">{movie.title}</h5>
+              <div
+                className="modal-header p-2 d-flex justify-content-center"
+                style={{ position: "relative" }}
+              >
+                <h2 className="modal-title text-white text-center">
+                  {movie.title}
+                </h2>
                 <button
                   type="button"
                   className="btn-close"
                   onClick={handleClose}
-                  style={{ filter: "invert(1)" }}
+                  style={{
+                    filter: "invert(1)",
+                    position: "absolute",
+                    right: "10px",
+                  }}
                 ></button>
               </div>
               {/* Body */}
-              <div className="modal-body">
-                <p>
-                  <strong>Length:</strong> {movie.length_minutes} min
-                </p>
-                <p>
-                  <strong>Rating:</strong> {movie.rating}
-                </p>
-                <p>
-                  <strong>Release Date:</strong> {movie.release_date}
-                </p>
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                  alt={`${movie.title} poster`}
-                  style={{ width: "200px" }}
-                />
+              <div className="modal-body d-flex" style={{ gap: "20px" }}>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ flex: "0 0 35%" }}
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                    alt={`${movie.title} poster`}
+                    className="img-fluid rounded"
+                  />
+                </div>
+                <div
+                  style={{
+                    flex: "1",
+                    maxHeight: "400px",
+                    overflowY: "auto",
+                  }}
+                >
+                  <p>
+                    <strong>Length:</strong> {movie.length_minutes} min
+                  </p>
+                  <p>
+                    <strong>Rating:</strong> {movie.rating}
+                  </p>
+                  <p>
+                    <strong>Release Date:</strong> {movie.release_date}
+                  </p>
+                  <p>
+                    <strong>Synopsis:</strong>
+                  </p>
+                  <p>{movie.description}</p>
+                </div>
               </div>
-              {/* Bottom right buttons */}
-              <div className="position-absolute bottom-0 end-0 d-flex flex-column p-3">
+              {/* Footer with buttons */}
+              <div className="modal-footer d-flex justify-content-end">
                 {onDelete && (
                   <button
-                    className="btn btn-danger rounded-circle d-flex align-items-center justify-content-center mb-2"
-                    style={{ width: "40px", height: "40px" }}
+                    className="btn btn-danger me-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       onDelete(movie);
+                      handleClose();
                     }}
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="right"
-                    title="Delete Movie"
                   >
-                    <i className="bi bi-trash fs-3"></i>
+                    <i className="bi bi-trash"></i> Delete
                   </button>
                 )}
                 {onMove && (
                   <button
-                    className="btn btn-warning rounded-circle d-flex align-items-center justify-content-center"
-                    style={{ width: "40px", height: "40px" }}
+                    className="btn btn-warning"
                     onClick={(e) => {
                       e.stopPropagation();
                       onMove(movie);
                     }}
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="right"
-                    title="Move To Watch History"
                   >
-                    <i className="bi bi-arrow-right fs-4"></i>
+                    <i className="bi bi-arrow-right"></i> Move to History
                   </button>
                 )}
               </div>

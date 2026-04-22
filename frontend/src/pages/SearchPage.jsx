@@ -38,6 +38,25 @@ export const SearchPage = () => {
     onAdded?.();
   };
 
+  const addToHistory = async (tmdbId) => {
+    try {
+      const res = await fetch("http://localhost:5001/api/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tmdbId }),
+      });
+      const data = await res.json();
+      if (res.status === 201) {
+        toast.success("Added to History");
+      } else {
+        toast.error("Failed to add movie");
+      }
+    } catch (error) {
+      toast.error("Error adding movie");
+    }
+    onAdded?.();
+  };
+
   return (
     <div className="d-flex flex-column align-items-center mt-5">
       <div className="w-50">
@@ -70,12 +89,18 @@ export const SearchPage = () => {
               <div className="flex-grow-1 px-3">
                 <h5 className="mb-0">{movie.title}</h5>
               </div>
-              <div className="pe-3">
+              <div className="pe-3 d-flex gap-2">
                 <button
                   className="btn btn-success btn-sm"
                   onClick={() => addToWatchList(movie.tmdbId)}
                 >
-                  Add
+                  + Watchlist
+                </button>
+                <button
+                  className="btn btn-warning btn-sm"
+                  onClick={() => addToHistory(movie.tmdbId)}
+                >
+                  + History
                 </button>
               </div>
             </div>
