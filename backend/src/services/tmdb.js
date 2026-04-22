@@ -42,6 +42,7 @@ export async function searchMovies(title) {
 
   const result = await fetchTmdb("/search/movie", {
     query: title,
+    sort_by: "popularity.desc",
   });
 
   // Return only the fields we need in the app.
