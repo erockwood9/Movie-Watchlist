@@ -10,9 +10,11 @@ import cors from "cors";
 const app = express();
 
 // Allows frontend and backend to communicate
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 
 // Middleware to parse incoming JSON body data
 app.use(express.json());
