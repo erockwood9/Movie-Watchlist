@@ -11,13 +11,13 @@ import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router";
 import { NotFoundPage } from "./pages/404Page";
 
+// Main app component managing watchlist and history state
 export const App = () => {
-  const [watchlist, setWatchlist] = useState([]);
+  const [watchlist, setWatchlist] = useState([]); // Movies user wants to watch
+  const [watchHistory, setWatchHistory] = useState([]); // Movies user has watched
+  const location = useLocation(); // Track page changes to reload data
 
-  const [watchHistory, setWatchHistory] = useState([]);
-
-  const location = useLocation();
-
+  // Fetch watchlist from backend
   const loadWatchlist = () => {
     fetch("http://localhost:5001/api/watchlist")
       .then((res) => res.json())
@@ -30,6 +30,7 @@ export const App = () => {
       .then((data) => setWatchHistory(data || []));
   };
 
+  // Move movie from watchlist to history
   const moveToHistory = (movie) => {
     fetch("http://localhost:5001/api/history", {
       method: "POST",
@@ -47,6 +48,7 @@ export const App = () => {
         toast.success(`${movie.title} has been moved to Watch History`);
       });
   };
+  // Remove movie from watchlist
   const deleteFromWatchlist = (movie) => {
     fetch(`http://localhost:5001/api/watchlist/${movie.tmdbId}`, {
       method: "DELETE",
@@ -56,6 +58,7 @@ export const App = () => {
     });
   };
 
+  // Remove movie from watch history
   const deleteFromHistory = (movie) => {
     fetch(`http://localhost:5001/api/history/${movie.tmdbId}`, {
       method: "DELETE",
@@ -65,6 +68,7 @@ export const App = () => {
     });
   };
 
+  // Reload data when navigating to different pages
   useEffect(() => {
     loadWatchlist();
     loadHistory();
