@@ -49,8 +49,12 @@ router.post("/watchlist", async (req, res) => {
   const tmdbId = Number(req.body.tmdbId);
   try {
     const movie = await ensureLocalMovie(tmdbId);
-    addMovieToWatchlist(movie.tmdbId);
-    return res.status(201).json({ movie });
+    const added = addMovieToWatchlist(movie.tmdbId);
+    if (added) {
+      return res.status(201).json({ movie, message: "Added to watchlist" });
+    } else {
+      return res.status(200).json({ movie, message: "Already in watchlist" });
+    }
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

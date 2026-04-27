@@ -113,8 +113,12 @@ function listWatchlist() {
 
 // Add a movie to watchlist by local movie id.
 function addMovieToWatchlist(movieId) {
+  const existing = selectWatchlist.all().find(w => w.tmdbId === movieId);
+  if (existing) {
+    return false; // already in watchlist
+  }
   insertWatchlist.run(movieId);
-  return listWatchlist();
+  return true; // added
 }
 
 // Remove a movie from watchlist by local movie id.
