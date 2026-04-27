@@ -7,7 +7,6 @@ export const WatchHisPage = ({ watchHistory, onDelete }) => {
     <div
       className="container"
       style={{
-        margin: "0px",
         paddingRight: "calc(var(--bs-gutter-x))",
         paddingLeft: "calc(var(--bs-gutter-x))",
         paddingTop: "calc(var(--bs-gutter-x))",

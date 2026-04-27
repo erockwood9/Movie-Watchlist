@@ -81,7 +81,21 @@ export const SearchPage = () => {
       {/* Display search results as a list of cards */}
       <div className="row mt-4">
         {(results || []).map((movie) => (
-          <div key={movie.tmdbId} className="card mb-3 p-3">
+          <div
+            key={movie.tmdbId}
+            className="card mb-3 p-3"
+            style={{
+              transition: "all 0.3s ease",
+              borderBottom: "3px solid",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderBottom = "3px solid #FFC107";
+              //e.currentTarget.style.paddingBottom = "8px";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderBottom = "3px solid";
+            }}
+          >
             <div className="d-flex align-items-center">
               <img
                 src={getPosterUrl(movie.poster_path)}
@@ -99,12 +113,24 @@ export const SearchPage = () => {
                 <button
                   className="btn btn-success btn-sm"
                   onClick={() => addToWatchList(movie.tmdbId)}
+                  onMouseEnter={(e) =>
+                    (e.target.style.filter = "brightness(1.1)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.filter = "brightness(1)")
+                  }
                 >
                   + Watchlist
                 </button>
                 <button
                   className="btn btn-warning btn-sm"
                   onClick={() => addToHistory(movie.tmdbId)}
+                  onMouseEnter={(e) =>
+                    (e.target.style.filter = "brightness(1.1)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.filter = "brightness(1)")
+                  }
                 >
                   + History
                 </button>

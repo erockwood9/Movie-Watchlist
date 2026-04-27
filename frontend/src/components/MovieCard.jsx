@@ -19,11 +19,22 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
 
   return (
     <>
-      {/* Clickable card with movie poster */}
+      {/* Clickable card with movie poster - hover effect */}
       <div
         className="card h-100"
-        style={{ cursor: "pointer" }}
+        style={{
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+        }}
         onClick={handleCardClick}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "scale(1.05)";
+          e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.3)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.boxShadow = "none";
+        }}
       >
         <img
           src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
@@ -114,6 +125,12 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
                       onDelete(movie);
                       handleClose();
                     }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.filter = "brightness(1.1)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.target.style.filter = "brightness(1)")
+                    }
                   >
                     <i className="bi bi-trash"></i> Delete
                   </button>
@@ -125,6 +142,12 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
                       e.stopPropagation();
                       onMove(movie);
                     }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.filter = "brightness(1.1)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.target.style.filter = "brightness(1)")
+                    }
                   >
                     <i className="bi bi-arrow-right"></i> Move to History
                   </button>
