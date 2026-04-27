@@ -3,20 +3,23 @@ import "bootswatch/dist/lux/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import * as bootstrap from "bootstrap";
 
+// Card component displaying movie poster, opens modal with details
 const MovieCard = ({ movie, onMove, onDelete }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  // Toggle details modal
   const handleCardClick = () => {
     setShowDetails(true);
   };
 
+  // Close details modal
   const handleClose = () => {
     setShowDetails(false);
   };
 
   return (
     <>
-      {/* Movie Card */}
+      {/* Clickable card with movie poster */}
       <div
         className="card h-100"
         style={{ cursor: "pointer" }}
@@ -29,7 +32,7 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
         />
       </div>
 
-      {/* Modal */}
+      {/* Modal showing full movie details */}
       {showDetails && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div
@@ -48,7 +51,7 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
                 overflowY: "hidden",
               }}
             >
-              {/* Header */}
+              {/* Modal title and close button */}
               <div
                 className="modal-header p-2 d-flex justify-content-center"
                 style={{ position: "relative" }}
@@ -67,7 +70,7 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
                   }}
                 ></button>
               </div>
-              {/* Body */}
+              {/* Movie poster and details */}
               <div className="modal-body d-flex" style={{ gap: "20px" }}>
                 <div
                   className="d-flex justify-content-center align-items-center"
@@ -101,7 +104,7 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
                   <p>{movie.description}</p>
                 </div>
               </div>
-              {/* Footer with buttons */}
+              {/* Action buttons: delete and move to history */}
               <div className="modal-footer d-flex justify-content-end">
                 {onDelete && (
                   <button

@@ -1,6 +1,7 @@
 import MovieCard from "../components/MovieCard";
 import React from "react";
 
+// Display all movies in the user's watch history
 export const WatchHisPage = ({ watchHistory, onDelete }) => {
   return (
     <div
@@ -12,6 +13,7 @@ export const WatchHisPage = ({ watchHistory, onDelete }) => {
         paddingTop: "calc(var(--bs-gutter-x))",
       }}
     >
+      {/* Show empty state or list of watched movies */}
       {watchHistory.length === 0 ? (
         <div className="text-center mt-5">
           <i className="bi bi-film fs-1 text-muted"></i>

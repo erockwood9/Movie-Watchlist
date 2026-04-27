@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 
+// Navigation bar with links to main pages
 const NavBar = () => {
   return (
     <nav
