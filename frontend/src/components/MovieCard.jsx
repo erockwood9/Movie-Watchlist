@@ -141,6 +141,7 @@ const MovieCard = ({ movie, onMove, onDelete }) => {
                     onClick={(e) => {
                       e.stopPropagation();
                       onMove(movie);
+                      handleClose();
                     }}
                     onMouseEnter={(e) =>
                       (e.target.style.filter = "brightness(1.1)")

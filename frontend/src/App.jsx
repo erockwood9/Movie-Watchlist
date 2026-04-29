@@ -32,6 +32,12 @@ export const App = () => {
 
   // Move movie from watchlist to history
   const moveToHistory = (movie) => {
+    // Optimistic update - update UI immediately
+    setWatchlist((prev) => prev.filter((m) => m.tmdbId !== movie.tmdbId));
+    setWatchHistory((prev) => [...prev, movie]);
+    toast.success(`${movie.title} has been moved to Watch History`);
+
+    // Then sync with backend
     fetch("http://localhost:5001/api/history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,29 +48,44 @@ export const App = () => {
           method: "DELETE",
         }),
       )
-      .then(() => {
-        setWatchlist((prev) => prev.filter((m) => m.tmdbId !== movie.tmdbId));
-        setWatchHistory((prev) => [...prev, movie]);
-        toast.success(`${movie.title} has been moved to Watch History`);
+      .catch(() => {
+        // If request fails, revert the optimistic update
+        setWatchlist((prev) => [...prev, movie]);
+        setWatchHistory((prev) =>
+          prev.filter((m) => m.tmdbId !== movie.tmdbId),
+        );
+        toast.error(`Failed to move ${movie.title} to Watch History`);
       });
   };
   // Remove movie from watchlist
   const deleteFromWatchlist = (movie) => {
+    // Optimistic update - update UI immediately
+    setWatchlist((prev) => prev.filter((m) => m.tmdbId !== movie.tmdbId));
+    toast.error(`${movie.title} has been removed from Watchlist`);
+
+    // Then sync with backend
     fetch(`http://localhost:5001/api/watchlist/${movie.tmdbId}`, {
       method: "DELETE",
-    }).then(() => {
-      setWatchlist((prev) => prev.filter((m) => m.tmdbId !== movie.tmdbId));
-      toast.error(`${movie.title} has been removed from Watchlist`);
+    }).catch(() => {
+      // If request fails, revert the optimistic update
+      loadWatchlist();
+      toast.error(`Failed to remove ${movie.title} from Watchlist`);
     });
   };
 
   // Remove movie from watch history
   const deleteFromHistory = (movie) => {
+    // Optimistic update - update UI immediately
+    setWatchHistory((prev) => prev.filter((m) => m.tmdbId !== movie.tmdbId));
+    toast.error(`${movie.title} has been removed from Watch History`);
+
+    // Then sync with backend
     fetch(`http://localhost:5001/api/history/${movie.tmdbId}`, {
       method: "DELETE",
-    }).then(() => {
-      setWatchHistory((prev) => prev.filter((m) => m.tmdbId !== movie.tmdbId));
-      toast.error(`${movie.title} has been removed from Watch History`);
+    }).catch(() => {
+      // If request fails, revert the optimistic update
+      loadHistory();
+      toast.error(`Failed to remove ${movie.title} from Watch History`);
     });
   };
 
@@ -74,7 +95,10 @@ export const App = () => {
     loadHistory();
   }, [location.pathname]);
 
-  const isNotFoundPage = location.pathname !== "/" && location.pathname !== "/search" && location.pathname !== "/history";
+  const isNotFoundPage =
+    location.pathname !== "/" &&
+    location.pathname !== "/search" &&
+    location.pathname !== "/history";
 
   return (
     <div>
