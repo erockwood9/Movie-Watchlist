@@ -1,4 +1,4 @@
-// Main entrypoint for the backend. Run `npm run dev` to start server
+// Main entrypoint for the backend.
 
 // Load environment variables from backend/.env
 import "dotenv/config";
